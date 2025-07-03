@@ -90,10 +90,10 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Chat Sidebar */}
-      <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${chatPanelCollapsed ? 'w-16' : 'w-64'}`}>
-        <div className="p-4 border-b border-gray-200">
+      <div className={`bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${chatPanelCollapsed ? 'w-16' : 'w-64'}`}>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-4">
             <Button
               variant="ghost"
@@ -118,7 +118,7 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
           
           {!chatPanelCollapsed && (
             <Select value={selectedModel} onValueChange={setSelectedModel}>
-              <SelectTrigger>
+              <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -132,7 +132,7 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
 
         {!chatPanelCollapsed && (
           <div className="p-4">
-            <h3 className="text-sm font-semibold text-gray-600 mb-2">Chat History</h3>
+            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Chat History</h3>
             <div className="space-y-2">
               {sessions.map((session) => (
                 <Button
@@ -142,7 +142,7 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
                   className={`w-full justify-start text-left p-2 ${
                     currentSessionId === session.id 
                       ? 'bg-[#72B742] hover:bg-[#72B742]/90 text-white' 
-                      : 'hover:bg-gray-100'
+                      : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   <span className="truncate">{session.title}</span>
@@ -156,26 +156,19 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 p-4">
+        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                onClick={onBack}
-                className="text-[#012E6C] hover:bg-[#012E6C]/10"
-              >
-                ← Back to AI Agents
-              </Button>
-              <h2 className="text-xl font-semibold text-[#012E6C]">DeepSeek Chat Assistant</h2>
+              <h2 className="text-xl font-semibold text-[#012E6C] dark:text-white">DeepSeek Chat Assistant</h2>
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 dark:text-gray-400">
               Model: {selectedModel}
             </div>
           </div>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
           {currentSession?.messages.map((message) => (
             <div
               key={message.id}
@@ -185,11 +178,11 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
                 className={`max-w-3xl p-4 rounded-lg ${
                   message.isUser
                     ? 'bg-[#72B742] text-white'
-                    : 'bg-white border border-gray-200'
+                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100'
                 }`}
               >
                 <p className="leading-relaxed">{message.content}</p>
-                <div className={`text-xs mt-2 ${message.isUser ? 'text-white/70' : 'text-gray-500'}`}>
+                <div className={`text-xs mt-2 ${message.isUser ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'}`}>
                   {message.timestamp.toLocaleTimeString()}
                 </div>
               </div>
@@ -198,10 +191,10 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
           
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 p-4 rounded-lg">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin w-4 h-4 border-2 border-[#72B742] border-t-transparent rounded-full"></div>
-                  <span className="text-gray-500">AI is thinking...</span>
+                  <span className="text-gray-500 dark:text-gray-400">AI is thinking...</span>
                 </div>
               </div>
             </div>
@@ -211,14 +204,14 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
         </div>
 
         {/* Input */}
-        <div className="bg-white border-t border-gray-200 p-4">
+        <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
           <div className="flex space-x-4">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              className="flex-1"
+              className="flex-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               disabled={isLoading}
             />
             <Button

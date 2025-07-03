@@ -12,6 +12,7 @@ interface NavbarProps {
   showSidebarToggle?: boolean;
   onSidebarToggle?: () => void;
   sidebarCollapsed?: boolean;
+  onTitleClick?: () => void;
 }
 
 const Navbar = ({ 
@@ -21,7 +22,8 @@ const Navbar = ({
   onLogout,
   showSidebarToggle = false,
   onSidebarToggle,
-  sidebarCollapsed = false
+  sidebarCollapsed = false,
+  onTitleClick
 }: NavbarProps) => {
   return (
     <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50">
@@ -40,7 +42,10 @@ const Navbar = ({
                 </svg>
               </Button>
             )}
-            <h1 className="text-xl font-black text-[#012E6C] dark:text-white cursor-pointer hover:text-[#72B742] dark:hover:text-[#72B742] transition-colors duration-300">
+            <h1 
+              className="text-xl font-black text-[#012E6C] dark:text-white cursor-pointer hover:text-[#72B742] dark:hover:text-[#72B742] transition-colors duration-300"
+              onClick={onTitleClick}
+            >
               AI Council Portal
             </h1>
           </div>

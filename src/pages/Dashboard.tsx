@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
@@ -55,7 +56,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   const handleAgentClick = (agentId: string) => {
     if (agentId === 'deepseek-chat') {
       setSelectedAgent(agentId);
-      setSidebarCollapsed(true); // Auto-collapse but don't hide
+      setSidebarCollapsed(true);
     } else if (agentId === 'scrum-po-ba') {
       alert('Scrum PO and BA Agent interface will be available soon!');
     }
@@ -63,7 +64,16 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
 
   const handleBackToAgents = () => {
     setSelectedAgent(null);
-    setSidebarCollapsed(false); // Expand sidebar when going back
+    setActiveMenuItem('ai-agents');
+    setSidebarCollapsed(false);
+  };
+
+  const handleTitleClick = () => {
+    if (selectedAgent) {
+      handleBackToAgents();
+    } else {
+      setActiveMenuItem('ai-agents');
+    }
   };
 
   if (selectedAgent === 'deepseek-chat') {
@@ -75,6 +85,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           showSidebarToggle={true}
           onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           sidebarCollapsed={sidebarCollapsed}
+          onTitleClick={handleTitleClick}
         />
         
         <div className="flex">
@@ -105,7 +116,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto">
               {agents.map((agent) => (
                 <div key={agent.id} className="animate-fade-in">
                   <AgentCard
@@ -164,6 +175,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
         showSidebarToggle={true}
         onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         sidebarCollapsed={sidebarCollapsed}
+        onTitleClick={handleTitleClick}
       />
       
       <div className="flex">
