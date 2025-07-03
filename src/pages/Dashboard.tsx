@@ -1,11 +1,14 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import AgentCard from '@/components/AgentCard';
 import ChatInterface from '@/components/ChatInterface';
 
-const Dashboard = () => {
+interface DashboardProps {
+  onLogout: () => void;
+}
+
+const Dashboard = ({ onLogout }: DashboardProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeMenuItem, setActiveMenuItem] = useState('ai-agents');
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
@@ -65,9 +68,10 @@ const Dashboard = () => {
 
   if (selectedAgent === 'deepseek-chat') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <Navbar 
           isLoggedIn={true} 
+          onLogout={onLogout}
           showSidebarToggle={true}
           onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           sidebarCollapsed={sidebarCollapsed}
@@ -93,15 +97,15 @@ const Dashboard = () => {
     switch (activeMenuItem) {
       case 'ai-agents':
         return (
-          <div className="p-8 space-y-8">
-            <div className="text-center space-y-4">
-              <h1 className="text-4xl font-black text-[#012E6C]">AI Agents</h1>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <div className="p-6 space-y-6">
+            <div className="text-center space-y-3">
+              <h1 className="text-3xl font-black text-[#012E6C] dark:text-white">AI Agents</h1>
+              <p className="text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
                 Access our suite of AI-powered tools designed to enhance productivity and drive innovation across the organization.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
               {agents.map((agent) => (
                 <div key={agent.id} className="animate-fade-in">
                   <AgentCard
@@ -119,30 +123,30 @@ const Dashboard = () => {
       
       case 'knowledge-base':
         return (
-          <div className="p-8 text-center space-y-6">
-            <h1 className="text-4xl font-black text-[#012E6C]">Knowledge Base</h1>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-12 shadow-lg max-w-2xl mx-auto">
-              <p className="text-lg text-gray-600">Coming soon - Access to curated AI resources and best practices.</p>
+          <div className="p-6 text-center space-y-4">
+            <h1 className="text-3xl font-black text-[#012E6C] dark:text-white">Knowledge Base</h1>
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
+              <p className="text-base text-gray-600 dark:text-gray-300">Coming soon - Access to curated AI resources and best practices.</p>
             </div>
           </div>
         );
       
       case 'ai-maturity':
         return (
-          <div className="p-8 text-center space-y-6">
-            <h1 className="text-4xl font-black text-[#012E6C]">AI Maturity Framework</h1>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-12 shadow-lg max-w-2xl mx-auto">
-              <p className="text-lg text-gray-600">Coming soon - Assess and track your organization's AI maturity.</p>
+          <div className="p-6 text-center space-y-4">
+            <h1 className="text-3xl font-black text-[#012E6C] dark:text-white">AI Maturity Framework</h1>
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
+              <p className="text-base text-gray-600 dark:text-gray-300">Coming soon - Assess and track your organization's AI maturity.</p>
             </div>
           </div>
         );
       
       case 'genai-radar':
         return (
-          <div className="p-8 text-center space-y-6">
-            <h1 className="text-4xl font-black text-[#012E6C]">GenAI Impact Radar</h1>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-12 shadow-lg max-w-2xl mx-auto">
-              <p className="text-lg text-gray-600">Coming soon - Monitor and analyze GenAI impact across the organization.</p>
+          <div className="p-6 text-center space-y-4">
+            <h1 className="text-3xl font-black text-[#012E6C] dark:text-white">GenAI Impact Radar</h1>
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg max-w-2xl mx-auto">
+              <p className="text-base text-gray-600 dark:text-gray-300">Coming soon - Monitor and analyze GenAI impact across the organization.</p>
             </div>
           </div>
         );
@@ -153,9 +157,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Navbar 
         isLoggedIn={true} 
+        onLogout={onLogout}
         showSidebarToggle={true}
         onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         sidebarCollapsed={sidebarCollapsed}
