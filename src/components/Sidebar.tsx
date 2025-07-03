@@ -18,18 +18,20 @@ const Sidebar = ({ isCollapsed, activeItem, onItemClick, onToggle }: SidebarProp
   ];
 
   return (
-    <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
-      <div className="p-4 border-b border-gray-200">
+    <div className={`bg-white/80 backdrop-blur-sm border-r border-gray-200/50 shadow-lg transition-all duration-300 ${
+      isCollapsed ? 'w-20' : 'w-72'
+    }`}>
+      <div className="p-4 border-b border-gray-200/50">
         <Button
           variant="ghost"
           size="sm"
           onClick={onToggle}
-          className="w-full justify-start p-2"
+          className="w-full justify-start p-3 hover:bg-[#012E6C]/5 rounded-xl transition-all duration-200"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-[#012E6C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          {!isCollapsed && <span className="ml-2">Menu</span>}
+          {!isCollapsed && <span className="ml-3 font-semibold text-[#012E6C]">Menu</span>}
         </Button>
       </div>
       
@@ -39,14 +41,16 @@ const Sidebar = ({ isCollapsed, activeItem, onItemClick, onToggle }: SidebarProp
             key={item.id}
             variant={activeItem === item.id ? "default" : "ghost"}
             onClick={() => onItemClick(item.id)}
-            className={`w-full justify-start p-3 ${
+            className={`w-full justify-start p-4 rounded-xl transition-all duration-200 ${
               activeItem === item.id 
-                ? 'bg-[#72B742] hover:bg-[#72B742]/90 text-white' 
-                : 'text-[#012E6C] hover:bg-[#012E6C]/10'
-            }`}
+                ? 'bg-gradient-to-r from-[#72B742] to-[#72B742]/90 hover:from-[#72B742]/90 hover:to-[#72B742] text-white shadow-lg' 
+                : 'text-[#012E6C] hover:bg-[#012E6C]/5 hover:text-[#72B742]'
+            } ${isCollapsed ? 'px-3' : ''}`}
           >
-            <span className="text-lg mr-3">{item.icon}</span>
-            {!isCollapsed && <span>{item.label}</span>}
+            <span className="text-xl flex-shrink-0">{item.icon}</span>
+            {!isCollapsed && (
+              <span className="ml-3 font-medium text-left">{item.label}</span>
+            )}
           </Button>
         ))}
       </nav>

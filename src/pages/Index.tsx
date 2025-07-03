@@ -11,7 +11,7 @@ const Index = () => {
   };
 
   return (
-    <div className="font-['Inter',sans-serif]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-['Inter',sans-serif]">
       {isLoggedIn ? (
         <Dashboard />
       ) : (

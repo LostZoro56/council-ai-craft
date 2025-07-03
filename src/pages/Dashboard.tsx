@@ -52,43 +52,66 @@ const Dashboard = () => {
   const handleAgentClick = (agentId: string) => {
     if (agentId === 'deepseek-chat') {
       setSelectedAgent(agentId);
-      setSidebarCollapsed(true);
+      setSidebarCollapsed(true); // Auto-collapse but don't hide
     } else if (agentId === 'scrum-po-ba') {
-      // For now, just show an alert for the Scrum agent
       alert('Scrum PO and BA Agent interface will be available soon!');
     }
   };
 
   const handleBackToAgents = () => {
     setSelectedAgent(null);
+    setSidebarCollapsed(false); // Expand sidebar when going back
   };
 
   if (selectedAgent === 'deepseek-chat') {
-    return <ChatInterface onBack={handleBackToAgents} />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <Navbar 
+          isLoggedIn={true} 
+          showSidebarToggle={true}
+          onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+          sidebarCollapsed={sidebarCollapsed}
+        />
+        
+        <div className="flex">
+          <Sidebar
+            isCollapsed={sidebarCollapsed}
+            activeItem={activeMenuItem}
+            onItemClick={setActiveMenuItem}
+            onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+          />
+          
+          <main className="flex-1">
+            <ChatInterface onBack={handleBackToAgents} />
+          </main>
+        </div>
+      </div>
+    );
   }
 
   const renderContent = () => {
     switch (activeMenuItem) {
       case 'ai-agents':
         return (
-          <div className="p-8">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-[#012E6C] mb-4">AI Agents</h1>
-              <p className="text-gray-600 text-lg">
+          <div className="p-8 space-y-8">
+            <div className="text-center space-y-4">
+              <h1 className="text-4xl font-black text-[#012E6C]">AI Agents</h1>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                 Access our suite of AI-powered tools designed to enhance productivity and drive innovation across the organization.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {agents.map((agent) => (
-                <AgentCard
-                  key={agent.id}
-                  id={agent.id}
-                  title={agent.title}
-                  description={agent.description}
-                  isAvailable={agent.isAvailable}
-                  onClick={() => handleAgentClick(agent.id)}
-                />
+                <div key={agent.id} className="animate-fade-in">
+                  <AgentCard
+                    id={agent.id}
+                    title={agent.title}
+                    description={agent.description}
+                    isAvailable={agent.isAvailable}
+                    onClick={() => handleAgentClick(agent.id)}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -96,25 +119,31 @@ const Dashboard = () => {
       
       case 'knowledge-base':
         return (
-          <div className="p-8">
-            <h1 className="text-3xl font-bold text-[#012E6C] mb-4">Knowledge Base</h1>
-            <p className="text-gray-600">Coming soon - Access to curated AI resources and best practices.</p>
+          <div className="p-8 text-center space-y-6">
+            <h1 className="text-4xl font-black text-[#012E6C]">Knowledge Base</h1>
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-12 shadow-lg max-w-2xl mx-auto">
+              <p className="text-lg text-gray-600">Coming soon - Access to curated AI resources and best practices.</p>
+            </div>
           </div>
         );
       
       case 'ai-maturity':
         return (
-          <div className="p-8">
-            <h1 className="text-3xl font-bold text-[#012E6C] mb-4">AI Maturity Framework</h1>
-            <p className="text-gray-600">Coming soon - Assess and track your organization's AI maturity.</p>
+          <div className="p-8 text-center space-y-6">
+            <h1 className="text-4xl font-black text-[#012E6C]">AI Maturity Framework</h1>
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-12 shadow-lg max-w-2xl mx-auto">
+              <p className="text-lg text-gray-600">Coming soon - Assess and track your organization's AI maturity.</p>
+            </div>
           </div>
         );
       
       case 'genai-radar':
         return (
-          <div className="p-8">
-            <h1 className="text-3xl font-bold text-[#012E6C] mb-4">GenAI Impact Radar</h1>
-            <p className="text-gray-600">Coming soon - Monitor and analyze GenAI impact across the organization.</p>
+          <div className="p-8 text-center space-y-6">
+            <h1 className="text-4xl font-black text-[#012E6C]">GenAI Impact Radar</h1>
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-12 shadow-lg max-w-2xl mx-auto">
+              <p className="text-lg text-gray-600">Coming soon - Monitor and analyze GenAI impact across the organization.</p>
+            </div>
           </div>
         );
       
@@ -124,7 +153,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Navbar 
         isLoggedIn={true} 
         showSidebarToggle={true}

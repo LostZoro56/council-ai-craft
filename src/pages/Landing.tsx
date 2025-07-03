@@ -17,33 +17,33 @@ const Landing = ({ onLogin }: LandingProps) => {
   const features = [
     {
       title: 'Track AI Use Cases & Impact Metrics',
-      description: 'Monitor progress, outcomes, and ROI across AI initiatives.',
-      icon: '📊'
+      description: 'Monitor progress, outcomes, and ROI across AI initiatives with comprehensive analytics and reporting.',
+      icon: <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/></svg>
     },
     {
       title: 'Collaborate on AI Projects with AI Strike Teams',
-      description: 'Engage with a network of professionals across domains to build meaningful solutions.',
-      icon: '🤝'
+      description: 'Engage with a network of professionals across domains to build meaningful solutions together.',
+      icon: <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/></svg>
     },
     {
       title: 'Access AI Knowledge Base & Best Practices',
-      description: 'Explore curated resources, implementation guides, and proven patterns.',
-      icon: '📚'
+      description: 'Explore curated resources, implementation guides, and proven patterns from industry experts.',
+      icon: <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     },
     {
       title: 'Leverage Ready-to-Use AI Agents',
-      description: 'Accelerate delivery using pre-built, customizable AI agents for common tasks.',
-      icon: '🤖'
+      description: 'Accelerate delivery using pre-built, customizable AI agents for common business tasks.',
+      icon: <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"/></svg>
     },
     {
       title: 'Submit & Review AI Use Cases',
       description: 'Share real-world implementations or explore others\' experiences to accelerate collective learning.',
-      icon: '💡'
+      icon: <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
     },
     {
       title: 'Participate in AI Surveys',
       description: 'Provide valuable feedback through surveys to shape council priorities and track AI adoption trends.',
-      icon: '📋'
+      icon: <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
     }
   ];
 
@@ -78,7 +78,7 @@ const Landing = ({ onLogin }: LandingProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Navbar 
         onSignIn={handleSignIn}
         onSignUp={handleSignUp}
@@ -87,12 +87,12 @@ const Landing = ({ onLogin }: LandingProps) => {
       <HeroSection onGetStarted={handleGetStarted} />
       
       {/* What We Can Do Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#012E6C] mb-6">What We Can Do</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Comprehensive AI solutions to accelerate your organization's digital transformation
+      <section className="py-24 relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-black text-[#012E6C] mb-6">What We Can Do</h2>
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Comprehensive AI solutions to accelerate your organization's digital transformation journey
             </p>
           </div>
           
@@ -102,7 +102,7 @@ const Landing = ({ onLogin }: LandingProps) => {
                 <FeatureCard
                   title={feature.title}
                   description={feature.description}
-                  icon={<span className="text-2xl">{feature.icon}</span>}
+                  icon={feature.icon}
                 />
               </div>
             ))}
@@ -111,16 +111,16 @@ const Landing = ({ onLogin }: LandingProps) => {
       </section>
       
       {/* Featured AI Agents Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#012E6C] mb-6">Featured AI Agents</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+      <section className="py-24 bg-white/30 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-black text-[#012E6C] mb-6">Featured AI Agents</h2>
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               Explore our suite of AI-powered tools designed to enhance productivity and drive innovation across the organization
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {featuredAgents.map((agent, index) => (
               <div key={agent.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.2}s` }}>
                 <AgentCard
@@ -140,23 +140,25 @@ const Landing = ({ onLogin }: LandingProps) => {
       </section>
       
       {/* Footer */}
-      <footer className="bg-[#012E6C] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold mb-4">About the AI Council</h3>
-            <p className="text-lg leading-relaxed max-w-4xl text-gray-200">
-              The AI Council leads strategic initiatives to harness the power of artificial intelligence, 
-              machine learning, and advanced analytics to solve complex business challenges and create value 
-              for our customers and stakeholders.
-            </p>
-            <p className="text-lg leading-relaxed max-w-4xl mt-4 text-gray-200">
-              Our team of experts collaborates across departments to identify opportunities, develop solutions, 
-              and establish best practices for AI adoption within the organization.
-            </p>
+      <footer className="bg-gradient-to-r from-[#012E6C] to-[#012E6C]/90 text-white py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-12">
+            <h3 className="text-3xl font-bold mb-6 text-white">About the AI Council</h3>
+            <div className="space-y-4 text-lg leading-relaxed text-gray-200">
+              <p>
+                The AI Council leads strategic initiatives to harness the power of artificial intelligence, 
+                machine learning, and advanced analytics to solve complex business challenges and create value 
+                for our customers and stakeholders.
+              </p>
+              <p>
+                Our team of experts collaborates across departments to identify opportunities, develop solutions, 
+                and establish best practices for AI adoption within the organization.
+              </p>
+            </div>
           </div>
           
           <div className="border-t border-gray-600 pt-8">
-            <p className="text-center text-gray-300">
+            <p className="text-center text-gray-300 text-lg">
               © 2025 AI Council Portal. All rights reserved.
             </p>
           </div>
