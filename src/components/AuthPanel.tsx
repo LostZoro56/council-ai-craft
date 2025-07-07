@@ -14,6 +14,7 @@ interface AuthPanelProps {
 const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -43,9 +44,9 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
         onClick={onClose}
       />
       
-      {/* Sliding panel */}
-      <div className={`fixed left-0 top-0 h-full w-96 bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ease-out ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
+      {/* Sliding panel from right */}
+      <div className={`fixed right-0 top-0 h-full w-96 bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ease-out ${
+        isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -101,6 +102,23 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
               </form>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {mode === 'signup' && (
+                  <div className="space-y-3">
+                    <Label htmlFor="username" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Enter your username"
+                      className="h-11"
+                      required
+                    />
+                  </div>
+                )}
+                
                 <div className="space-y-3">
                   <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Email Address
