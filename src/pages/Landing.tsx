@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
@@ -69,7 +70,7 @@ const Landing = ({ onLogin }: LandingProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Navbar 
         onAuthClick={handleAuthClick}
       />
@@ -80,8 +81,8 @@ const Landing = ({ onLogin }: LandingProps) => {
       <section className="py-24 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-black text-[#012E6C] mb-6">What We Can Do</h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            <h2 className="text-5xl font-black text-[#012E6C] dark:text-[#72B742] mb-6">What We Can Do</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
               Comprehensive AI solutions to accelerate your organization's digital transformation journey
             </p>
           </div>
@@ -101,11 +102,11 @@ const Landing = ({ onLogin }: LandingProps) => {
       </section>
       
       {/* Featured AI Agents Section */}
-      <section className="py-24 bg-white/30 backdrop-blur-sm">
+      <section className="py-24 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-black text-[#012E6C] mb-6">Featured AI Agents</h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            <h2 className="text-5xl font-black text-[#012E6C] dark:text-[#72B742] mb-6">Featured AI Agents</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
               Explore our suite of AI-powered tools designed to enhance productivity and drive innovation across the organization
             </p>
           </div>
@@ -129,11 +130,11 @@ const Landing = ({ onLogin }: LandingProps) => {
       </section>
       
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-[#012E6C] to-[#012E6C]/90 text-white py-20">
+      <footer className="bg-gradient-to-r from-[#012E6C] to-[#012E6C]/90 dark:from-[#72B742] dark:to-[#72B742]/90 text-white py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
             <h3 className="text-3xl font-bold mb-6 text-white">About the AI Council</h3>
-            <div className="space-y-4 text-lg leading-relaxed text-gray-200">
+            <div className="space-y-4 text-lg leading-relaxed text-gray-200 dark:text-gray-100">
               <p>
                 The AI Council leads strategic initiatives to harness the power of artificial intelligence, 
                 machine learning, and advanced analytics to solve complex business challenges and create value 
@@ -146,8 +147,8 @@ const Landing = ({ onLogin }: LandingProps) => {
             </div>
           </div>
           
-          <div className="border-t border-gray-600 pt-8">
-            <p className="text-center text-gray-300 text-lg">
+          <div className="border-t border-gray-600 dark:border-gray-400 pt-8">
+            <p className="text-center text-gray-300 dark:text-gray-100 text-lg">
               © 2025 AI Council Portal. All rights reserved.
             </p>
           </div>

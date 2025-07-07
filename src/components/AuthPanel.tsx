@@ -65,7 +65,7 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-bold text-[#012E6C] dark:text-white">
+            <h2 className="text-xl font-bold text-[#012E6C] dark:text-[#72B742]">
               {showForgotPassword ? 'Reset Password' : mode === 'signin' ? 'Sign In' : 'Sign Up'}
             </h2>
             <Button

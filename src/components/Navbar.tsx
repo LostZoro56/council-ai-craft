@@ -38,15 +38,15 @@ const Navbar = ({
                 variant="ghost"
                 size="sm"
                 onClick={onSidebarToggle}
-                className="p-2 hover:bg-[#012E6C]/5 dark:hover:bg-white/5 rounded-xl transition-all duration-200"
+                className="p-2 hover:bg-[#012E6C]/5 dark:hover:bg-[#72B742]/5 rounded-xl transition-all duration-200"
               >
-                <svg className="w-4 h-4 text-[#012E6C] dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-[#012E6C] dark:text-[#72B742]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={sidebarCollapsed ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
                 </svg>
               </Button>
             )}
             <h1 
-              className="text-xl font-black text-[#012E6C] dark:text-white cursor-pointer hover:text-[#72B742] dark:hover:text-[#72B742] transition-colors duration-300"
+              className="text-xl font-black text-[#012E6C] dark:text-[#72B742] cursor-pointer hover:text-[#72B742] dark:hover:text-[#012E6C] transition-colors duration-300"
               onClick={onTitleClick}
             >
               AI Council Portal
@@ -63,9 +63,9 @@ const Navbar = ({
                 variant="ghost"
                 size="sm"
                 onClick={onAuthClick}
-                className="p-2 hover:bg-[#012E6C]/5 dark:hover:bg-white/5 rounded-full transition-all duration-200"
+                className="p-2 hover:bg-[#012E6C]/5 dark:hover:bg-[#72B742]/5 rounded-full transition-all duration-200"
               >
-                <User className="w-5 h-5 text-[#012E6C] dark:text-white" />
+                <User className="w-5 h-5 text-[#012E6C] dark:text-[#72B742]" />
               </Button>
             )}
           </div>
