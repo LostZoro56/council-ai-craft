@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 interface AgentCardProps {
   id: string;
@@ -44,13 +45,13 @@ const AgentCard = ({ id, title, description, isAvailable, onClick }: AgentCardPr
           </p>
         </div>
         
-        {/* Fixed button container */}
-        <div className="mt-4 pt-3 flex justify-end">
+        {/* Fixed button container with more padding from bottom */}
+        <div className="mt-4 pb-2 flex justify-end">
           {isAvailable ? (
             <Button 
-              className="bg-gradient-to-r from-[#72B742] to-[#72B742]/90 hover:from-[#72B742]/90 hover:to-[#72B742] text-white font-medium py-1.5 px-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-xs"
+              className="bg-[#012E6C] hover:bg-[#012E6C]/90 text-white font-medium p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
-              Launch →
+              <ArrowRight className="w-4 h-4" />
             </Button>
           ) : (
             <Button 
