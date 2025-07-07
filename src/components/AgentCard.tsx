@@ -14,7 +14,7 @@ interface AgentCardProps {
 const AgentCard = ({ id, title, description, isAvailable, onClick }: AgentCardProps) => {
   return (
     <Card 
-      className={`group relative overflow-hidden transition-all duration-500 border-0 h-40 ${
+      className={`group relative overflow-hidden transition-all duration-500 border-0 h-44 ${
         isAvailable 
           ? 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 cursor-pointer' 
           : 'bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm shadow-md cursor-not-allowed'
@@ -37,14 +37,15 @@ const AgentCard = ({ id, title, description, isAvailable, onClick }: AgentCardPr
           }`}>
             {title}
           </h3>
-          <p className={`leading-relaxed text-xs line-clamp-3 ${
+          <p className={`leading-relaxed text-xs line-clamp-4 ${
             isAvailable ? 'text-gray-600 dark:text-gray-300' : 'text-gray-400'
           }`}>
             {description}
           </p>
         </div>
         
-        <div className="flex justify-end pt-4">
+        {/* Fixed button container */}
+        <div className="mt-4 pt-3 flex justify-end">
           {isAvailable ? (
             <Button 
               className="bg-gradient-to-r from-[#72B742] to-[#72B742]/90 hover:from-[#72B742]/90 hover:to-[#72B742] text-white font-medium py-1.5 px-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-xs"

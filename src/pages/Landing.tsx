@@ -1,18 +1,16 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FeatureCard from '@/components/FeatureCard';
 import AgentCard from '@/components/AgentCard';
-import AuthModal from '@/components/AuthModal';
+import AuthPanel from '@/components/AuthPanel';
 
 interface LandingProps {
   onLogin: () => void;
 }
 
 const Landing = ({ onLogin }: LandingProps) => {
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [authPanelOpen, setAuthPanelOpen] = useState(false);
 
   const features = [
     {
@@ -63,25 +61,17 @@ const Landing = ({ onLogin }: LandingProps) => {
   ];
 
   const handleGetStarted = () => {
-    setAuthMode('signup');
-    setAuthModalOpen(true);
+    setAuthPanelOpen(true);
   };
 
-  const handleSignIn = () => {
-    setAuthMode('signin');
-    setAuthModalOpen(true);
-  };
-
-  const handleSignUp = () => {
-    setAuthMode('signup');
-    setAuthModalOpen(true);
+  const handleAuthClick = () => {
+    setAuthPanelOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Navbar 
-        onSignIn={handleSignIn}
-        onSignUp={handleSignUp}
+        onAuthClick={handleAuthClick}
       />
       
       <HeroSection onGetStarted={handleGetStarted} />
@@ -96,7 +86,7 @@ const Landing = ({ onLogin }: LandingProps) => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
               <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <FeatureCard
@@ -129,8 +119,7 @@ const Landing = ({ onLogin }: LandingProps) => {
                   description={agent.description}
                   isAvailable={agent.isAvailable}
                   onClick={() => {
-                    setAuthMode('signin');
-                    setAuthModalOpen(true);
+                    setAuthPanelOpen(true);
                   }}
                 />
               </div>
@@ -165,11 +154,9 @@ const Landing = ({ onLogin }: LandingProps) => {
         </div>
       </footer>
       
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        mode={authMode}
-        onModeChange={setAuthMode}
+      <AuthPanel
+        isOpen={authPanelOpen}
+        onClose={() => setAuthPanelOpen(false)}
         onSuccess={onLogin}
       />
     </div>

@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import UserMenu from '@/components/UserMenu';
 import ThemeToggle from '@/components/ThemeToggle';
+import { User } from 'lucide-react';
 
 interface NavbarProps {
   isLoggedIn?: boolean;
@@ -13,6 +14,7 @@ interface NavbarProps {
   onSidebarToggle?: () => void;
   sidebarCollapsed?: boolean;
   onTitleClick?: () => void;
+  onAuthClick?: () => void;
 }
 
 const Navbar = ({ 
@@ -23,7 +25,8 @@ const Navbar = ({
   showSidebarToggle = false,
   onSidebarToggle,
   sidebarCollapsed = false,
-  onTitleClick
+  onTitleClick,
+  onAuthClick
 }: NavbarProps) => {
   return (
     <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50">
@@ -56,21 +59,14 @@ const Navbar = ({
             {isLoggedIn ? (
               <UserMenu onLogout={onLogout || (() => {})} />
             ) : (
-              <>
-                <Button 
-                  variant="ghost" 
-                  onClick={onSignIn}
-                  className="text-[#012E6C] dark:text-white hover:bg-[#012E6C]/5 dark:hover:bg-white/5 font-medium px-4 py-2 rounded-xl transition-all duration-200 text-sm"
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  onClick={onSignUp}
-                  className="bg-gradient-to-r from-[#72B742] to-[#72B742]/90 hover:from-[#72B742]/90 hover:to-[#72B742] text-white font-medium px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm"
-                >
-                  Sign Up
-                </Button>
-              </>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onAuthClick}
+                className="p-2 hover:bg-[#012E6C]/5 dark:hover:bg-white/5 rounded-full transition-all duration-200"
+              >
+                <User className="w-5 h-5 text-[#012E6C] dark:text-white" />
+              </Button>
             )}
           </div>
         </div>
