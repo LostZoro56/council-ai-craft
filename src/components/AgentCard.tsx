@@ -1,67 +1,33 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 
 interface AgentCardProps {
   id: string;
   title: string;
+  icon: string;
   description: string;
-  isAvailable: boolean;
   onClick?: () => void;
 }
 
-const AgentCard = ({ id, title, description, isAvailable, onClick }: AgentCardProps) => {
+const AgentCard = ({ id, title, icon, description, onClick }: AgentCardProps) => {
   return (
     <Card 
-      className={`group relative overflow-hidden transition-all duration-500 border-0 h-44 ${
-        isAvailable 
-          ? 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 cursor-pointer' 
-          : 'bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm shadow-md cursor-not-allowed'
-      }`}
-      onClick={isAvailable ? onClick : undefined}
+      className="group cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 bg-card border border-border"
+      onClick={onClick}
     >
-      {/* Background gradient overlay */}
-      <div className={`absolute inset-0 transition-opacity duration-500 ${
-        isAvailable 
-          ? 'bg-gradient-to-r from-[#72B742]/10 to-[#012E6C]/10 opacity-0 group-hover:opacity-100' 
-          : 'bg-gray-200/30 dark:bg-gray-700/30'
-      }`} />
-
-      <CardContent className="p-5 relative z-10 h-full flex flex-col">
-        <div className="flex-1 space-y-2">
-          <h3 className={`text-sm font-bold transition-colors duration-300 leading-tight ${
-            isAvailable 
-              ? 'text-[#012E6C] dark:text-white group-hover:text-[#72B742]' 
-              : 'text-gray-400'
-          }`}>
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center space-x-3">
+          <div className="flex-shrink-0 w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-lg">
+            {icon}
+          </div>
+          <h3 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
             {title}
           </h3>
-          <p className={`leading-relaxed text-xs line-clamp-4 ${
-            isAvailable ? 'text-gray-600 dark:text-gray-300' : 'text-gray-400'
-          }`}>
-            {description}
-          </p>
         </div>
-        
-        {/* Fixed button container with more padding from bottom */}
-        <div className="mt-4 pb-2 flex justify-end">
-          {isAvailable ? (
-            <Button 
-              className="bg-[#012E6C] hover:bg-[#012E6C]/90 text-white font-medium p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          ) : (
-            <Button 
-              disabled
-              className="bg-gray-200 dark:bg-gray-700 text-gray-400 py-1.5 px-3 rounded-lg cursor-not-allowed text-xs"
-            >
-              Coming Soon
-            </Button>
-          )}
-        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {description}
+        </p>
       </CardContent>
     </Card>
   );

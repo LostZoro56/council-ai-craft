@@ -27,13 +27,14 @@ const ThemeToggle = () => {
       variant="ghost"
       size="sm"
       onClick={toggleTheme}
-      className="p-2 hover:bg-[#012E6C]/5 dark:hover:bg-[#72B742]/5 rounded-full transition-all duration-200"
+      className="h-8 w-8 px-0"
     >
       {isDark ? (
-        <Sun className="w-5 h-5 text-[#012E6C] dark:text-[#72B742]" />
+        <Sun className="h-4 w-4" />
       ) : (
-        <Moon className="w-5 h-5 text-[#012E6C] dark:text-[#72B742]" />
+        <Moon className="h-4 w-4" />
       )}
+      <span className="sr-only">Toggle theme</span>
     </Button>
   );
 };
