@@ -19,7 +19,7 @@ const Index = () => {
       {isLoggedIn ? (
         <Dashboard onLogout={handleLogout} />
       ) : (
-        <Landing />
+        <Landing onLogin={handleLogin} />
       )}
     </div>
   );
