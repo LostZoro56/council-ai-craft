@@ -31,10 +31,10 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
     }
   };
 
-  // If an agent is selected, show full workspace
+  // If an agent is selected, show full workspace without page scrolling
   if (selectedAgent) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="h-screen flex flex-col overflow-hidden bg-background">
         <Navbar 
           isLoggedIn={true} 
           onLogout={onLogout}

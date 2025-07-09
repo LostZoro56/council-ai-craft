@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import AgentCard from '@/components/AgentCard';
-import { Search } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 
 interface AgentLibraryProps {
   onAgentClick: (agentId: string) => void;
@@ -12,6 +13,27 @@ const AgentLibrary = ({ onAgentClick }: AgentLibraryProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const agents = [
+    {
+      id: 'scrum-po-ba',
+      title: 'Scrum PO and BA Agent',
+      icon: '📋',
+      description: 'Enhances raw feature specifications to generate improved specifications and user stories using CrewAI with Product Owner and Business Analyst agents.',
+      isAvailable: true
+    },
+    {
+      id: 'chat-assistant',
+      title: 'Chat Assistant',
+      icon: '💬',
+      description: 'Powered by DeepSeek R3 model deployed on Azure AI Foundry. Multi-agent orchestration with CrewAI for enhanced conversational capabilities.',
+      isAvailable: true
+    },
+    {
+      id: 'qa-tester',
+      title: 'QA Tester Agent',
+      icon: '🧪',
+      description: 'Automated testing agent that generates test cases, performs quality assurance, and provides comprehensive testing documentation.',
+      isAvailable: true
+    },
     {
       id: 'general-web-research',
       title: 'General web research',
@@ -83,7 +105,13 @@ const AgentLibrary = ({ onAgentClick }: AgentLibraryProps) => {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-semibold text-foreground">Agents</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-foreground">Agents</h1>
+          <Button className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            New Session
+          </Button>
+        </div>
         
         {/* Search */}
         <div className="relative max-w-md">
@@ -119,6 +147,7 @@ const AgentLibrary = ({ onAgentClick }: AgentLibraryProps) => {
             title={agent.title}
             icon={agent.icon}
             description={agent.description}
+            isAvailable={agent.isAvailable}
             onClick={() => onAgentClick(agent.id)}
           />
         ))}
