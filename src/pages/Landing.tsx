@@ -1,26 +1,28 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { AgentCard } from '@/components/AgentCard';
-import { Layout } from '@/components/Layout';
-import AuthModal from '@/components/AuthModal';
+import AgentCard from '@/components/AgentCard';
+import AuthPanel from '@/components/AuthPanel';
 import { Sparkles } from 'lucide-react';
 
 const Landing = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
   const handleSignIn = () => {
-    setAuthMode('signin');
     setIsAuthOpen(true);
   };
 
   const handleSignUp = () => {
-    setAuthMode('signup');
     setIsAuthOpen(true);
   };
 
   const handleCloseAuth = () => {
     setIsAuthOpen(false);
+  };
+
+  const handleAuthSuccess = () => {
+    // This would typically update the global auth state
+    console.log('Auth successful');
   };
 
   const handleAgentClick = (agentId: string) => {
@@ -52,21 +54,47 @@ const Landing = () => {
   ];
 
   return (
-    <Layout>
-      <AuthModal
-        open={isAuthOpen}
-        mode={authMode}
+    <div className="min-h-screen bg-background">
+      <AuthPanel
+        isOpen={isAuthOpen}
         onClose={handleCloseAuth}
+        onSuccess={handleAuthSuccess}
       />
+      
+      {/* Navigation */}
+      <nav className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center">
+          <div className="mr-4 hidden md:flex">
+            <a className="mr-6 flex items-center space-x-2" href="/">
+              <span className="hidden font-bold sm:inline-block text-foreground">
+                AI Agents Platform
+              </span>
+            </a>
+          </div>
+          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+            <div className="w-full flex-1 md:w-auto md:flex-none">
+            </div>
+            <nav className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm" onClick={handleSignIn}>
+                Sign In
+              </Button>
+              <Button size="sm" onClick={handleSignUp}>
+                Sign Up
+              </Button>
+            </nav>
+          </div>
+        </div>
+      </nav>
+
       <section className="pt-24">
         <div className="container px-4 md:px-6">
           <div className="grid gap-6 items-center">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  Unleash the power of AI agents <Sparkles className="inline-block h-6 w-6 ml-2 align-middle" />
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl text-foreground">
+                  Unleash the power of AI agents <Sparkles className="inline-block h-6 w-6 ml-2 align-middle text-primary" />
                 </h1>
-                <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                <p className="max-w-[600px] text-muted-foreground md:text-xl">
                   Automate tasks, conduct research, and analyze data with ease.
                   Choose from a variety of specialized AI agents to streamline
                   your workflow.
@@ -96,7 +124,7 @@ const Landing = () => {
 
       <section className="mt-12">
         <div className="container px-4 md:px-6">
-          <h2 className="text-2xl font-bold tracking-tight mb-4">
+          <h2 className="text-2xl font-bold tracking-tight mb-4 text-foreground">
             Explore Our Agents
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -119,10 +147,10 @@ const Landing = () => {
           <div className="grid gap-6 items-center">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-foreground">
                   Ready to get started?
                 </h2>
-                <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                <p className="max-w-[600px] text-muted-foreground md:text-xl">
                   Sign up to access the full suite of AI agents and start
                   automating your tasks today.
                 </p>
@@ -143,7 +171,7 @@ const Landing = () => {
           </div>
         </div>
       </section>
-    </Layout>
+    </div>
   );
 };
 
