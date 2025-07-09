@@ -45,15 +45,17 @@ const AgentCard = ({ id, title, icon, description, isAvailable = true, onClick, 
           ) : (
             <div className="flex-1" />
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleSessionsClick}
-            className="h-8 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <History className="h-3 w-3 mr-1" />
-            Sessions
-          </Button>
+          {isAvailable && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSessionsClick}
+              className="h-8 px-2 text-xs"
+            >
+              <History className="h-3 w-3 mr-1" />
+              Sessions
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
