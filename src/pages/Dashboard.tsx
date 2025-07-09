@@ -21,11 +21,6 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
     setSessionId(null);
   };
 
-  const handleSessionsClick = (agentId: string) => {
-    setSelectedAgentFilter(agentId);
-    setActiveMenuItem('my-work');
-  };
-
   const handleContinueSession = (sessionId: string, agentId: string) => {
     setSessionId(sessionId);
     setSelectedAgent(agentId);
@@ -36,6 +31,13 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
     setSessionId(null);
     setSelectedAgentFilter(null);
     setActiveMenuItem('agent-library');
+  };
+
+  const handleSessionsClick = (agentId: string) => {
+    setSelectedAgentFilter(agentId);
+    setActiveMenuItem('my-work');
+    setSelectedAgent(null);
+    setSessionId(null);
   };
 
   const handleTitleClick = () => {
@@ -69,6 +71,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           agentId={selectedAgent}
           sessionId={sessionId}
           onBack={handleBackToLibrary}
+          onSessionsClick={() => handleSessionsClick(selectedAgent)}
         />
       </div>
     );
@@ -80,7 +83,6 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
         return (
           <AgentLibrary 
             onAgentClick={handleAgentClick}
-            onSessionsClick={handleSessionsClick}
           />
         );
       case 'my-work':
@@ -94,7 +96,6 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
         return (
           <AgentLibrary 
             onAgentClick={handleAgentClick}
-            onSessionsClick={handleSessionsClick}
           />
         );
     }

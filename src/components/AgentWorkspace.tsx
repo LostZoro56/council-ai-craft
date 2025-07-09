@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, ArrowLeft, Plus } from 'lucide-react';
+import { Send, ArrowLeft, Plus, History } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -23,9 +23,10 @@ interface AgentWorkspaceProps {
   agentId: string;
   sessionId?: string;
   onBack: () => void;
+  onSessionsClick?: () => void;
 }
 
-const AgentWorkspace = ({ agentId, sessionId, onBack }: AgentWorkspaceProps) => {
+const AgentWorkspace = ({ agentId, sessionId, onBack, onSessionsClick }: AgentWorkspaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [qaOutputs, setQaOutputs] = useState<QAOutput[]>([]);
   const [input, setInput] = useState('');
@@ -187,6 +188,10 @@ const AgentWorkspace = ({ agentId, sessionId, onBack }: AgentWorkspaceProps) => 
     return null;
   };
 
+  const handleSessionsClick = () => {
+    onSessionsClick?.();
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Left Panel - Input */}
@@ -203,15 +208,26 @@ const AgentWorkspace = ({ agentId, sessionId, onBack }: AgentWorkspaceProps) => 
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleNewSession}
-              className="flex items-center gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              New Session
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSessionsClick}
+                className="flex items-center gap-2"
+              >
+                <History className="h-4 w-4" />
+                Sessions
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNewSession}
+                className="flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                New Session
+              </Button>
+            </div>
           </div>
           <h2 className="text-lg font-semibold text-foreground">{currentAgent.title}</h2>
           <p className="text-sm text-muted-foreground">{currentAgent.subtitle}</p>
