@@ -1,9 +1,8 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, ArrowLeft } from 'lucide-react';
+import { Send, ArrowLeft, Plus } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -29,6 +28,7 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
   const [qaOutputs, setQaOutputs] = useState<QAOutput[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [currentQAOutput, setCurrentQAOutput] = useState<QAOutput | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const qaOutputsEndRef = useRef<HTMLDivElement>(null);
 
@@ -79,27 +79,25 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
     if (!input.trim()) return;
 
     if (isQAAgent) {
-      // For QA Agent, add to outputs instead of messages
+      // For QA Agent, add to current output first
       const newOutput: QAOutput = {
         id: Date.now().toString(),
         query: input,
-        response: '', // Will be filled when response comes
+        response: '',
         timestamp: new Date()
       };
 
-      setQaOutputs(prev => [...prev, newOutput]);
+      setCurrentQAOutput(newOutput);
       setInput('');
       setIsLoading(true);
 
       // Simulate AI response
       setTimeout(() => {
-        const response = `Test Cases for: "${input}"\n\n1. Verify basic functionality\n2. Test edge cases\n3. Validate error handling\n4. Check performance requirements\n5. Ensure accessibility compliance\n\nThis is a simulated QA response that would include detailed test scenarios, expected results, and testing procedures.`;
+        const response = `Test Cases for: "${newOutput.query}"\n\n1. Verify basic functionality\n2. Test edge cases\n3. Validate error handling\n4. Check performance requirements\n5. Ensure accessibility compliance\n\nThis is a simulated QA response that would include detailed test scenarios, expected results, and testing procedures.`;
         
-        setQaOutputs(prev => prev.map(output => 
-          output.id === newOutput.id 
-            ? { ...output, response }
-            : output
-        ));
+        const completedOutput = { ...newOutput, response };
+        setCurrentQAOutput(completedOutput);
+        setQaOutputs(prev => [...prev, completedOutput]);
         setIsLoading(false);
       }, 1500);
     } else {
@@ -130,21 +128,39 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
     }
   };
 
+  const handleNewSession = () => {
+    setMessages([]);
+    setQaOutputs([]);
+    setCurrentQAOutput(null);
+    setInput('');
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Left Panel - Input */}
       <div className="w-96 border-r border-border bg-background flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-border flex-shrink-0">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onBack}
-            className="mb-2 -ml-2"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+          <div className="flex items-center justify-between mb-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="-ml-2"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNewSession}
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              New Session
+            </Button>
+          </div>
           <h2 className="text-lg font-semibold text-foreground">{currentAgent.title}</h2>
           <p className="text-sm text-muted-foreground">{currentAgent.subtitle}</p>
         </div>
@@ -191,7 +207,7 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
                     <div>
                       <div className="text-xs font-medium text-muted-foreground mb-1">Response:</div>
                       <div className="text-sm text-foreground whitespace-pre-wrap">
-                        {output.response || (isLoading ? 'Generating response...' : 'No response yet')}
+                        {output.response}
                       </div>
                     </div>
                   </CardContent>
@@ -203,32 +219,59 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
         )}
       </div>
 
-      {/* Right Panel - Responses (for non-QA agents) */}
-      {!isQAAgent && (
-        <div className="flex-1 flex flex-col bg-muted/30 overflow-hidden">
-          {/* Header */}
-          <div className="p-4 border-b border-border bg-background flex-shrink-0">
-            <h3 className="text-sm font-medium text-foreground">Response</h3>
-          </div>
+      {/* Right Panel - Responses */}
+      <div className="flex-1 flex flex-col bg-muted/30 overflow-hidden">
+        {/* Header */}
+        <div className="p-4 border-b border-border bg-background flex-shrink-0">
+          <h3 className="text-sm font-medium text-foreground">Response</h3>
+        </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.length === 0 ? (
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {isQAAgent ? (
+            // QA Agent - Show current output
+            currentQAOutput ? (
+              <div className="space-y-4">
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <div className="text-xs font-medium text-muted-foreground mb-2">You asked:</div>
+                  <p className="text-sm text-foreground">{currentQAOutput.query}</p>
+                </div>
+                
+                <div className="bg-background p-6 rounded-lg border">
+                  <div className="flex items-start justify-between mb-3">
+                    <span className="text-xs font-medium text-foreground">{currentAgent.title}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {currentQAOutput.timestamp.toLocaleTimeString()}
+                    </span>
+                  </div>
+                  <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                    {currentQAOutput.response || (isLoading ? 'Generating response...' : 'No response yet')}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-muted-foreground text-sm">Send a message to get started</p>
+              </div>
+            )
+          ) : (
+            // Other agents - existing message system
+            messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <p className="text-muted-foreground text-sm">Send a message to get started</p>
               </div>
             ) : (
               messages.map((message) => (
-                <div key={message.id} className="space-y-2">
+                <div key={message.id} className="space-y-4">
                   {message.isUser && (
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">You asked:</div>
+                    <div className="bg-muted/50 p-4 rounded-lg">
+                      <div className="text-xs font-medium text-muted-foreground mb-2">You asked:</div>
                       <p className="text-sm text-foreground">{message.content}</p>
                     </div>
                   )}
                   {!message.isUser && (
-                    <div className="bg-background p-4 rounded-lg border">
-                      <div className="flex items-start justify-between mb-2">
+                    <div className="bg-background p-6 rounded-lg border">
+                      <div className="flex items-start justify-between mb-3">
                         <span className="text-xs font-medium text-foreground">{currentAgent.title}</span>
                         <span className="text-xs text-muted-foreground">
                           {message.timestamp.toLocaleTimeString()}
@@ -239,21 +282,21 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
                   )}
                 </div>
               ))
-            )}
-            
-            {isLoading && !isQAAgent && (
-              <div className="bg-background p-4 rounded-lg border">
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
-                  <span className="text-sm text-muted-foreground">Generating response...</span>
-                </div>
+            )
+          )}
+          
+          {isLoading && !isQAAgent && (
+            <div className="bg-background p-6 rounded-lg border">
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                <span className="text-sm text-muted-foreground">Generating response...</span>
               </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
         </div>
-      )}
+      </div>
     </div>
   );
 };

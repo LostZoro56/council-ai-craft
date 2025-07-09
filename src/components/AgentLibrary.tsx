@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -17,21 +16,21 @@ const AgentLibrary = ({ onAgentClick }: AgentLibraryProps) => {
       id: 'scrum-po-ba',
       title: 'Scrum PO and BA Agent',
       icon: '📋',
-      description: 'Enhances raw feature specifications to generate improved specifications and user stories using CrewAI with Product Owner and Business Analyst agents.',
+      description: 'Generate improved specifications and user stories with Product Owner and Business Analyst agents.',
       isAvailable: true
     },
     {
       id: 'chat-assistant',
       title: 'Chat Assistant',
       icon: '💬',
-      description: 'Powered by DeepSeek R3 model deployed on Azure AI Foundry. Multi-agent orchestration with CrewAI for enhanced conversational capabilities.',
+      description: 'AI-powered conversational assistance with multi-agent orchestration capabilities.',
       isAvailable: true
     },
     {
       id: 'qa-tester',
       title: 'QA Tester Agent',
       icon: '🧪',
-      description: 'Automated testing agent that generates test cases, performs quality assurance, and provides comprehensive testing documentation.',
+      description: 'Generate test cases, perform quality assurance, and provide testing documentation.',
       isAvailable: true
     },
     {
