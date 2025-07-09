@@ -16,21 +16,23 @@ interface QAOutput {
   query: string;
   response: string;
   timestamp: Date;
+  name: string;
 }
 
 interface AgentWorkspaceProps {
   agentId: string;
+  sessionId?: string;
   onBack: () => void;
 }
 
-const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
+const AgentWorkspace = ({ agentId, sessionId, onBack }: AgentWorkspaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [qaOutputs, setQaOutputs] = useState<QAOutput[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [currentQAOutput, setCurrentQAOutput] = useState<QAOutput | null>(null);
+  const [selectedOutputId, setSelectedOutputId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const qaOutputsEndRef = useRef<HTMLDivElement>(null);
 
   const agentInfo = {
     'scrum-po-ba': {
@@ -63,41 +65,72 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
   const currentAgent = agentInfo[agentId as keyof typeof agentInfo] || agentInfo['general-web-research'];
   const isQAAgent = agentId === 'qa-tester';
 
-  const scrollToBottom = () => {
-    if (isQAAgent) {
-      qaOutputsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // Load session data if sessionId is provided
+  useEffect(() => {
+    if (sessionId) {
+      // Simulate loading session data
+      if (isQAAgent) {
+        const mockOutputs: QAOutput[] = [
+          {
+            id: '1',
+            query: 'Test the checkout process',
+            response: 'Test Cases for Checkout Process:\n\n1. Verify cart functionality\n2. Test payment gateway integration\n3. Validate order confirmation\n4. Check email notifications\n5. Test error handling for failed payments',
+            timestamp: new Date(Date.now() - 3600000),
+            name: 'Checkout Process Testing'
+          },
+          {
+            id: '2',
+            query: 'API endpoint validation',
+            response: 'API Testing Framework:\n\n1. Test all CRUD operations\n2. Validate response formats\n3. Check authentication mechanisms\n4. Test rate limiting\n5. Verify error responses',
+            timestamp: new Date(Date.now() - 7200000),
+            name: 'API Validation Suite'
+          }
+        ];
+        setQaOutputs(mockOutputs);
+        setSelectedOutputId(mockOutputs[0].id);
+      }
     }
+  }, [sessionId, isQAAgent]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, qaOutputs]);
+  }, [messages]);
+
+  const generateOutputName = (query: string): string => {
+    const words = query.split(' ').slice(0, 3).join(' ');
+    return `${words.charAt(0).toUpperCase() + words.slice(1)} Testing`;
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
 
     if (isQAAgent) {
-      // For QA Agent, add to current output first
+      const outputName = generateOutputName(input);
       const newOutput: QAOutput = {
         id: Date.now().toString(),
         query: input,
         response: '',
-        timestamp: new Date()
+        timestamp: new Date(),
+        name: outputName
       };
 
       setCurrentQAOutput(newOutput);
+      setSelectedOutputId(null);
       setInput('');
       setIsLoading(true);
 
       // Simulate AI response
       setTimeout(() => {
-        const response = `Test Cases for: "${newOutput.query}"\n\n1. Verify basic functionality\n2. Test edge cases\n3. Validate error handling\n4. Check performance requirements\n5. Ensure accessibility compliance\n\nThis is a simulated QA response that would include detailed test scenarios, expected results, and testing procedures.`;
+        const response = `Test Cases for: "${newOutput.query}"\n\n1. Verify basic functionality\n2. Test edge cases\n3. Validate error handling\n4. Check performance requirements\n5. Ensure accessibility compliance\n\nDetailed test scenarios:\n• Happy path testing\n• Boundary value analysis\n• Error condition testing\n• Integration testing\n• User acceptance criteria validation`;
         
         const completedOutput = { ...newOutput, response };
         setCurrentQAOutput(completedOutput);
-        setQaOutputs(prev => [...prev, completedOutput]);
+        setQaOutputs(prev => [completedOutput, ...prev]);
+        setSelectedOutputId(completedOutput.id);
         setIsLoading(false);
       }, 1500);
     } else {
@@ -132,7 +165,26 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
     setMessages([]);
     setQaOutputs([]);
     setCurrentQAOutput(null);
+    setSelectedOutputId(null);
     setInput('');
+  };
+
+  const handleOutputClick = (outputId: string) => {
+    setSelectedOutputId(outputId);
+    setCurrentQAOutput(null);
+  };
+
+  const getDisplayedOutput = () => {
+    if (currentQAOutput && !currentQAOutput.response && isLoading) {
+      return currentQAOutput;
+    }
+    if (selectedOutputId) {
+      return qaOutputs.find(output => output.id === selectedOutputId) || null;
+    }
+    if (currentQAOutput) {
+      return currentQAOutput;
+    }
+    return null;
   };
 
   return (
@@ -189,31 +241,35 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
           </div>
         </div>
 
-        {/* QA Agent - Outputs Section */}
+        {/* QA Agent - Outputs List */}
         {isQAAgent && (
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="p-4 border-t border-border flex-shrink-0">
               <h3 className="text-sm font-medium text-foreground">Outputs</h3>
             </div>
             
-            <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-              {qaOutputs.map((output) => (
-                <Card key={output.id} className="border border-border">
-                  <CardContent className="p-3 max-h-48 overflow-y-auto">
-                    <div className="mb-2">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">Query:</div>
-                      <div className="text-sm text-foreground mb-3 p-2 bg-muted rounded">{output.query}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs font-medium text-muted-foreground mb-1">Response:</div>
-                      <div className="text-sm text-foreground whitespace-pre-wrap">
-                        {output.response}
+            <div className="flex-1 overflow-y-auto px-4 pb-4">
+              <div className="space-y-2">
+                {qaOutputs.map((output) => (
+                  <Card 
+                    key={output.id} 
+                    className={`border cursor-pointer transition-all duration-200 hover:shadow-sm ${
+                      selectedOutputId === output.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+                    }`}
+                    onClick={() => handleOutputClick(output.id)}
+                  >
+                    <CardContent className="p-3">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-medium text-foreground">{output.name}</h4>
+                        <p className="text-xs text-muted-foreground truncate">{output.query}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {output.timestamp.toLocaleTimeString()}
+                        </p>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              <div ref={qaOutputsEndRef} />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -223,29 +279,40 @@ const AgentWorkspace = ({ agentId, onBack }: AgentWorkspaceProps) => {
       <div className="flex-1 flex flex-col bg-muted/30 overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-border bg-background flex-shrink-0">
-          <h3 className="text-sm font-medium text-foreground">Response</h3>
+          {isQAAgent ? (
+            <div>
+              <h3 className="text-sm font-medium text-foreground">Response</h3>
+              {getDisplayedOutput() && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {selectedOutputId ? 'Viewing: ' : 'Current Output: '}{getDisplayedOutput()?.name}
+                </p>
+              )}
+            </div>
+          ) : (
+            <h3 className="text-sm font-medium text-foreground">Response</h3>
+          )}
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {isQAAgent ? (
-            // QA Agent - Show current output
-            currentQAOutput ? (
+            // QA Agent - Show selected or current output
+            getDisplayedOutput() ? (
               <div className="space-y-4">
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <div className="text-xs font-medium text-muted-foreground mb-2">You asked:</div>
-                  <p className="text-sm text-foreground">{currentQAOutput.query}</p>
+                  <div className="text-xs font-medium text-muted-foreground mb-2">Query:</div>
+                  <p className="text-sm text-foreground">{getDisplayedOutput()?.query}</p>
                 </div>
                 
                 <div className="bg-background p-6 rounded-lg border">
                   <div className="flex items-start justify-between mb-3">
                     <span className="text-xs font-medium text-foreground">{currentAgent.title}</span>
                     <span className="text-xs text-muted-foreground">
-                      {currentQAOutput.timestamp.toLocaleTimeString()}
+                      {getDisplayedOutput()?.timestamp.toLocaleTimeString()}
                     </span>
                   </div>
                   <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                    {currentQAOutput.response || (isLoading ? 'Generating response...' : 'No response yet')}
+                    {getDisplayedOutput()?.response || (isLoading ? 'Generating response...' : 'No response yet')}
                   </div>
                 </div>
               </div>

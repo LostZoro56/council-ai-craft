@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { History } from 'lucide-react';
 
 interface AgentCardProps {
   id: string;
@@ -9,9 +11,15 @@ interface AgentCardProps {
   description: string;
   isAvailable?: boolean;
   onClick?: () => void;
+  onSessionsClick?: (agentId: string) => void;
 }
 
-const AgentCard = ({ id, title, icon, description, isAvailable = true, onClick }: AgentCardProps) => {
+const AgentCard = ({ id, title, icon, description, isAvailable = true, onClick, onSessionsClick }: AgentCardProps) => {
+  const handleSessionsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onSessionsClick?.(id);
+  };
+
   return (
     <Card 
       className="group cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 bg-card border border-border"
@@ -31,9 +39,22 @@ const AgentCard = ({ id, title, icon, description, isAvailable = true, onClick }
         <p className="text-xs text-muted-foreground leading-relaxed">
           {description}
         </p>
-        {!isAvailable && (
-          <span className="text-xs text-muted-foreground">Coming soon</span>
-        )}
+        <div className="flex items-center justify-between">
+          {!isAvailable ? (
+            <span className="text-xs text-muted-foreground">Coming soon</span>
+          ) : (
+            <div className="flex-1" />
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSessionsClick}
+            className="h-8 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <History className="h-3 w-3 mr-1" />
+            Sessions
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

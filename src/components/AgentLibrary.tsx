@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -6,9 +7,10 @@ import { Search, Plus } from 'lucide-react';
 
 interface AgentLibraryProps {
   onAgentClick: (agentId: string) => void;
+  onSessionsClick?: (agentId: string) => void;
 }
 
-const AgentLibrary = ({ onAgentClick }: AgentLibraryProps) => {
+const AgentLibrary = ({ onAgentClick, onSessionsClick }: AgentLibraryProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const agents = [
@@ -148,6 +150,7 @@ const AgentLibrary = ({ onAgentClick }: AgentLibraryProps) => {
             description={agent.description}
             isAvailable={agent.isAvailable}
             onClick={() => onAgentClick(agent.id)}
+            onSessionsClick={onSessionsClick}
           />
         ))}
       </div>

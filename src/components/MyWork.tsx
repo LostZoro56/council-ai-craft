@@ -3,14 +3,20 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Clock, Star, MoreHorizontal } from 'lucide-react';
+import { Search, Clock, Star, MoreHorizontal, Play } from 'lucide-react';
 
-const MyWork = () => {
+interface MyWorkProps {
+  selectedAgent?: string;
+  onContinueSession?: (sessionId: string, agentId: string) => void;
+}
+
+const MyWork = ({ selectedAgent, onContinueSession }: MyWorkProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const sessions = [
     {
       id: '1',
+      agentId: 'general-web-research',
       agentName: 'General web research',
       sessionName: 'AI Platforms Research',
       lastModified: '2 hours ago',
@@ -19,6 +25,7 @@ const MyWork = () => {
     },
     {
       id: '2',
+      agentId: 'chart-analysis',
       agentName: 'Chart analysis',
       sessionName: 'Sales Data Analysis',
       lastModified: '1 day ago',
@@ -27,24 +34,61 @@ const MyWork = () => {
     },
     {
       id: '3',
-      agentName: 'Meeting notes',
-      sessionName: 'Weekly Standup Summary',
+      agentId: 'qa-tester',
+      agentName: 'QA Tester Agent',
+      sessionName: 'E-commerce Testing Suite',
+      lastModified: '2 days ago',
+      isFavorite: false,
+      preview: 'Test cases for checkout process...'
+    },
+    {
+      id: '4',
+      agentId: 'scrum-po-ba',
+      agentName: 'Scrum PO and BA Agent',
+      sessionName: 'User Story Enhancement',
       lastModified: '3 days ago',
       isFavorite: false,
-      preview: 'Action items from team meeting...'
+      preview: 'Enhanced user stories for mobile app...'
+    },
+    {
+      id: '5',
+      agentId: 'qa-tester',
+      agentName: 'QA Tester Agent',
+      sessionName: 'API Testing Framework',
+      lastModified: '1 week ago',
+      isFavorite: true,
+      preview: 'Comprehensive API test coverage...'
     }
   ];
 
-  const filteredSessions = sessions.filter(session =>
+  let filteredSessions = sessions.filter(session =>
     session.sessionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     session.agentName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Filter by selected agent if provided
+  if (selectedAgent) {
+    filteredSessions = filteredSessions.filter(session => session.agentId === selectedAgent);
+  }
+
+  const handleContinueSession = (sessionId: string, agentId: string) => {
+    onContinueSession?.(sessionId, agentId);
+  };
 
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-semibold text-foreground">My Work</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-foreground">
+            {selectedAgent ? 'Agent Sessions' : 'My Work'}
+          </h1>
+          {selectedAgent && (
+            <p className="text-sm text-muted-foreground">
+              Sessions for {sessions.find(s => s.agentId === selectedAgent)?.agentName}
+            </p>
+          )}
+        </div>
         
         {/* Search */}
         <div className="relative max-w-md">
@@ -89,9 +133,20 @@ const MyWork = () => {
                     <span>{session.lastModified}</span>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleContinueSession(session.id, session.agentId)}
+                    className="h-8 text-xs"
+                  >
+                    <Play className="h-3 w-3 mr-1" />
+                    Continue
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
