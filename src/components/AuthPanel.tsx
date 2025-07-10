@@ -13,8 +13,8 @@ interface AuthPanelProps {
 
 const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
-  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -44,7 +44,7 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
 
   const handleForgotPassword = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Password reset link sent to your email!');
+    alert('Password reset instructions sent to your email!');
     setShowForgotPassword(false);
   };
 
@@ -54,25 +54,25 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
     <>
       {/* Background overlay */}
       <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 transition-opacity duration-300"
         onClick={onClose}
       />
       
       {/* Sliding panel from right */}
-      <div className={`fixed right-0 top-0 h-full w-96 bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 ease-out ${
+      <div className={`fixed right-0 top-0 h-full w-96 bg-card shadow-2xl z-50 transform transition-transform duration-300 ease-out ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-bold text-[#012E6C] dark:text-[#72B742]">
+          <div className="flex items-center justify-between p-6 border-b border-border">
+            <h2 className="text-xl font-bold text-primary">
               {showForgotPassword ? 'Reset Password' : mode === 'signin' ? 'Sign In' : 'Sign Up'}
             </h2>
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+              className="p-2 hover:bg-accent rounded-full"
             >
               <X className="w-4 h-4" />
             </Button>
@@ -83,15 +83,15 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
             {showForgotPassword ? (
               <form onSubmit={handleForgotPassword} className="space-y-6">
                 <div className="space-y-3">
-                  <Label htmlFor="reset-email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Email Address
+                  <Label htmlFor="reset-username" className="text-sm font-medium text-foreground">
+                    Username
                   </Label>
                   <Input
-                    id="reset-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    id="reset-username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
                     className="h-11"
                     required
                   />
@@ -100,7 +100,7 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
                 <div className="space-y-4">
                   <Button 
                     type="submit" 
-                    className="w-full h-11 bg-[#72B742] hover:bg-[#72B742]/90 text-white font-medium"
+                    className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                   >
                     Send Reset Link
                   </Button>
@@ -116,17 +116,32 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
               </form>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-3">
+                  <Label htmlFor="username" className="text-sm font-medium text-foreground">
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    className="h-11"
+                    required
+                  />
+                </div>
+
                 {mode === 'signup' && (
                   <div className="space-y-3">
-                    <Label htmlFor="username" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Username
+                    <Label htmlFor="email" className="text-sm font-medium text-foreground">
+                      Email Address
                     </Label>
                     <Input
-                      id="username"
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Enter your username"
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
                       className="h-11"
                       required
                     />
@@ -134,22 +149,7 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
                 )}
                 
                 <div className="space-y-3">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Email Address
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="h-11"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-3">
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="password" className="text-sm font-medium text-foreground">
                     Password
                   </Label>
                   <Input
@@ -165,7 +165,7 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
                 
                 {mode === 'signup' && (
                   <div className="space-y-3">
-                    <Label htmlFor="confirm-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label htmlFor="confirm-password" className="text-sm font-medium text-foreground">
                       Confirm Password
                     </Label>
                     <Input
@@ -182,7 +182,7 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
                 
                 <Button 
                   type="submit" 
-                  className="w-full h-11 bg-[#72B742] hover:bg-[#72B742]/90 text-white font-medium"
+                  className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                 >
                   {mode === 'signin' ? 'Sign In' : 'Sign Up'}
                 </Button>
@@ -192,7 +192,7 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
                     type="button" 
                     variant="link" 
                     onClick={() => setShowForgotPassword(true)}
-                    className="w-full text-[#012E6C] dark:text-[#72B742] hover:no-underline"
+                    className="w-full text-primary hover:no-underline"
                   >
                     Forgot Password?
                   </Button>
@@ -203,9 +203,9 @@ const AuthPanel = ({ isOpen, onClose, onSuccess }: AuthPanelProps) => {
 
           {/* Footer */}
           {!showForgotPassword && (
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="p-6 border-t border-border">
               <div className="text-center space-y-3">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   {mode === 'signin' ? "Don't have an account?" : "Already have an account?"}
                 </p>
                 <Button

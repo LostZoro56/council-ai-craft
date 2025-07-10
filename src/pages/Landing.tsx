@@ -1,10 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FeatureCard from '@/components/FeatureCard';
 import AgentCard from '@/components/AgentCard';
 import AuthPanel from '@/components/AuthPanel';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface LandingProps {
   onLogin: () => void;
@@ -12,6 +16,76 @@ interface LandingProps {
 
 const Landing = ({ onLogin }: LandingProps) => {
   const [authPanelOpen, setAuthPanelOpen] = useState(false);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const agentsRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Hero animations
+    if (heroRef.current) {
+      gsap.fromTo(heroRef.current.querySelector('.hero-title'), 
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
+      );
+      
+      gsap.fromTo(heroRef.current.querySelector('.hero-subtitle'), 
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' }
+      );
+      
+      gsap.fromTo(heroRef.current.querySelector('.hero-button'), 
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.8, delay: 0.6, ease: 'back.out(1.7)' }
+      );
+    }
+
+    // Features section animation
+    if (featuresRef.current) {
+      const featureCards = featuresRef.current.querySelectorAll('.feature-card');
+      gsap.fromTo(featureCards,
+        { opacity: 0, y: 60, scale: 0.8 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: featuresRef.current,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    }
+
+    // Agents section animation
+    if (agentsRef.current) {
+      const agentCards = agentsRef.current.querySelectorAll('.agent-card');
+      gsap.fromTo(agentCards,
+        { opacity: 0, x: -50, rotationY: -15 },
+        { 
+          opacity: 1, 
+          x: 0, 
+          rotationY: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: agentsRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    }
+
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
 
   const features = [
     {
@@ -70,26 +144,27 @@ const Landing = ({ onLogin }: LandingProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <Navbar 
-        onAuthClick={handleAuthClick}
-      />
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar onAuthClick={handleAuthClick} />
       
-      <HeroSection onGetStarted={handleGetStarted} />
+      <div ref={heroRef}>
+        <HeroSection onGetStarted={handleGetStarted} />
+      </div>
       
       {/* What We Can Do Section */}
-      <section className="py-24 relative">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-24 relative" ref={featuresRef}>
+        <div className="absolute inset-0 bg-gradient-to-b from-background to-muted/20" />
+        <div className="max-w-7xl mx-auto px-6 relative">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-black text-[#012E6C] dark:text-[#72B742] mb-6">What We Can Do</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <h2 className="text-5xl font-black text-primary mb-6">What We Can Do</h2>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
               Comprehensive AI solutions to accelerate your organization's digital transformation journey
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-              <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div key={index} className="feature-card">
                 <FeatureCard
                   title={feature.title}
                   description={feature.description}
@@ -102,18 +177,18 @@ const Landing = ({ onLogin }: LandingProps) => {
       </section>
       
       {/* Featured AI Agents Section */}
-      <section className="py-24 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm">
+      <section className="py-24 bg-muted/30" ref={agentsRef}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-black text-[#012E6C] dark:text-[#72B742] mb-6">Featured AI Agents</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <h2 className="text-5xl font-black text-primary mb-6">Featured AI Agents</h2>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
               Explore our suite of AI-powered tools designed to enhance productivity and drive innovation across the organization
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {featuredAgents.map((agent, index) => (
-              <div key={agent.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.2}s` }}>
+              <div key={agent.id} className="agent-card">
                 <AgentCard
                   id={agent.id}
                   title={agent.title}
@@ -130,11 +205,11 @@ const Landing = ({ onLogin }: LandingProps) => {
       </section>
       
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-[#012E6C] to-[#012E6C]/90 dark:from-[#72B742] dark:to-[#72B742]/90 text-white py-20">
+      <footer className="bg-primary text-primary-foreground py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
-            <h3 className="text-3xl font-bold mb-6 text-white">About the AI Council</h3>
-            <div className="space-y-4 text-lg leading-relaxed text-gray-200 dark:text-gray-100">
+            <h3 className="text-3xl font-bold mb-6">About the AI Council</h3>
+            <div className="space-y-4 text-lg leading-relaxed text-primary-foreground/80">
               <p>
                 The AI Council leads strategic initiatives to harness the power of artificial intelligence, 
                 machine learning, and advanced analytics to solve complex business challenges and create value 
@@ -147,8 +222,8 @@ const Landing = ({ onLogin }: LandingProps) => {
             </div>
           </div>
           
-          <div className="border-t border-gray-600 dark:border-gray-400 pt-8">
-            <p className="text-center text-gray-300 dark:text-gray-100 text-lg">
+          <div className="border-t border-primary-foreground/20 pt-8">
+            <p className="text-center text-primary-foreground/60 text-lg">
               © 2025 AI Council Portal. All rights reserved.
             </p>
           </div>
