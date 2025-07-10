@@ -1,8 +1,8 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import EnhancedMessage from './EnhancedMessage';
 
 interface Message {
   id: string;
@@ -42,6 +42,112 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
     scrollToBottom();
   }, [currentSession?.messages]);
 
+  const getMockResponse = (userInput: string, model: string): string => {
+    const input = userInput.toLowerCase();
+    
+    if (input.includes('diagram') && (input.includes('flowchart') || input.includes('flow'))) {
+      return `Here's a flowchart diagram for your request:
+
+\`\`\`mermaid
+flowchart TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> E[Fix Issue]
+    E --> B
+    C --> F[End]
+\`\`\`
+
+This flowchart shows a basic debugging process. You can toggle between the visual diagram and the code, zoom in/out, and download it as SVG or PNG.`;
+    }
+    
+    if (input.includes('diagram') && input.includes('sequence')) {
+      return `Here's a sequence diagram showing user authentication:
+
+\`\`\`mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Database
+    
+    User->>Frontend: Login Request
+    Frontend->>Backend: Validate Credentials
+    Backend->>Database: Check User
+    Database-->>Backend: User Data
+    Backend-->>Frontend: JWT Token
+    Frontend-->>User: Login Success
+\`\`\`
+
+This sequence diagram illustrates the authentication flow in a typical web application.`;
+    }
+    
+    if (input.includes('code') && (input.includes('react') || input.includes('component'))) {
+      return `Here's a React component example:
+
+\`\`\`javascript
+import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  const increment = () => {
+    setCount(prev => prev + 1);
+  };
+
+  const decrement = () => {
+    setCount(prev => prev - 1);
+  };
+
+  return (
+    <div className="counter">
+      <h2>Counter: {count}</h2>
+      <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button>
+    </div>
+  );
+};
+
+export default Counter;
+\`\`\`
+
+This is a simple React counter component with increment and decrement functionality.`;
+    }
+    
+    if (input.includes('code') && input.includes('python')) {
+      return `Here's a Python example:
+
+\`\`\`python
+def fibonacci(n):
+    """Generate Fibonacci sequence up to n terms."""
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    
+    sequence = [0, 1]
+    for i in range(2, n):
+        sequence.append(sequence[i-1] + sequence[i-2])
+    
+    return sequence
+
+# Example usage
+result = fibonacci(10)
+print(f"First 10 Fibonacci numbers: {result}")
+\`\`\`
+
+This function generates the Fibonacci sequence up to n terms with proper error handling.`;
+    }
+
+    return `I'm DeepSeek Chat Assistant powered by ${model}. I've received your message: "${userInput}". 
+
+Try asking me to create a diagram (like "show me a flowchart diagram" or "create a sequence diagram") or ask for code examples (like "show me React code" or "write Python code") to see the enhanced rendering capabilities!
+
+This is a simulated response for demonstration purposes.`;
+  };
+
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -58,6 +164,7 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
         : session
     ));
 
+    const currentInput = input;
     setInput('');
     setIsLoading(true);
 
@@ -65,7 +172,7 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
     setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: `I'm DeepSeek Chat Assistant powered by ${selectedModel}. I've received your message: "${input}". This is a simulated response for demonstration purposes.`,
+        content: getMockResponse(currentInput, selectedModel),
         isUser: false,
         timestamp: new Date()
       };
@@ -181,7 +288,11 @@ const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
                     : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100'
                 }`}
               >
-                <p className="leading-relaxed">{message.content}</p>
+                {message.isUser ? (
+                  <p className="leading-relaxed">{message.content}</p>
+                ) : (
+                  <EnhancedMessage content={message.content} />
+                )}
                 <div className={`text-xs mt-2 ${message.isUser ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'}`}>
                   {message.timestamp.toLocaleTimeString()}
                 </div>
