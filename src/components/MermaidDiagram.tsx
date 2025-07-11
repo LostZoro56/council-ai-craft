@@ -12,6 +12,7 @@ const MermaidDiagram = ({ code }: MermaidDiagramProps) => {
   const [showCode, setShowCode] = useState(false);
   const [zoom, setZoom] = useState(1);
   const diagramRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [diagramId] = useState(`mermaid-${Math.random().toString(36).substr(2, 9)}`);
 
   useEffect(() => {
@@ -154,10 +155,22 @@ const MermaidDiagram = ({ code }: MermaidDiagramProps) => {
         </div>
       ) : (
         <div 
-          className="overflow-auto max-h-96 flex justify-center"
-          style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}
+          ref={containerRef}
+          className="overflow-auto max-h-96 border border-gray-100 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900"
+          style={{ 
+            maxWidth: '100%',
+            position: 'relative'
+          }}
         >
-          <div ref={diagramRef} className="mermaid-container" />
+          <div 
+            ref={diagramRef}
+            className="mermaid-container inline-block min-w-full"
+            style={{ 
+              transform: `scale(${zoom})`,
+              transformOrigin: 'top left',
+              transition: 'transform 0.2s ease-in-out'
+            }}
+          />
         </div>
       )}
     </div>

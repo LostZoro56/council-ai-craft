@@ -1,109 +1,99 @@
-import React, { useState, useRef, useEffect } from 'react';
+
+import React, { useState } from 'react';
+import { Send, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import EnhancedMessage from './EnhancedMessage';
 
 interface Message {
   id: string;
+  type: 'user' | 'assistant';
   content: string;
-  isUser: boolean;
   timestamp: Date;
 }
 
-interface ChatSession {
-  id: string;
-  title: string;
-  messages: Message[];
-}
+const ChatInterface = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
 
-interface ChatInterfaceProps {
-  onBack: () => void;
-}
+  const handleSend = () => {
+    if (!inputValue.trim()) return;
 
-const ChatInterface = ({ onBack }: ChatInterfaceProps) => {
-  const [sessions, setSessions] = useState<ChatSession[]>([
-    { id: '1', title: 'New Chat', messages: [] }
-  ]);
-  const [currentSessionId, setCurrentSessionId] = useState('1');
-  const [input, setInput] = useState('');
-  const [selectedModel, setSelectedModel] = useState('deepseek-r1');
-  const [chatPanelCollapsed, setChatPanelCollapsed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: inputValue,
+      timestamp: new Date(),
+    };
 
-  const currentSession = sessions.find(s => s.id === currentSessionId);
+    setMessages(prev => [...prev, userMessage]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    // Mock AI response based on keywords
+    setTimeout(() => {
+      let aiResponse = '';
+      const input = inputValue.toLowerCase();
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [currentSession?.messages]);
-
-  const getMockResponse = (userInput: string, model: string): string => {
-    const input = userInput.toLowerCase();
-    
-    if (input.includes('diagram') && (input.includes('flowchart') || input.includes('flow'))) {
-      return `Here's a flowchart diagram for your request:
+      if (input.includes('diagram') || input.includes('flowchart') || input.includes('sequence')) {
+        if (input.includes('flowchart')) {
+          aiResponse = `Here's a flowchart diagram for your process:
 
 \`\`\`mermaid
 flowchart TD
     A[Start] --> B{Is it working?}
     B -->|Yes| C[Great!]
-    B -->|No| D[Debug]
-    D --> E[Fix Issue]
-    E --> B
-    C --> F[End]
+    B -->|No| D[Fix it]
+    D --> B
+    C --> E[End]
 \`\`\`
 
-This flowchart shows a basic debugging process. You can toggle between the visual diagram and the code, zoom in/out, and download it as SVG or PNG.`;
-    }
-    
-    if (input.includes('diagram') && input.includes('sequence')) {
-      return `Here's a sequence diagram showing user authentication:
+This flowchart shows a simple decision-making process with a feedback loop.`;
+        } else if (input.includes('sequence')) {
+          aiResponse = `Here's a sequence diagram showing the interaction:
 
 \`\`\`mermaid
 sequenceDiagram
     participant User
-    participant Frontend
-    participant Backend
+    participant App
     participant Database
     
-    User->>Frontend: Login Request
-    Frontend->>Backend: Validate Credentials
-    Backend->>Database: Check User
-    Database-->>Backend: User Data
-    Backend-->>Frontend: JWT Token
-    Frontend-->>User: Login Success
+    User->>App: Login Request
+    App->>Database: Validate Credentials
+    Database-->>App: Validation Result
+    App-->>User: Login Response
 \`\`\`
 
-This sequence diagram illustrates the authentication flow in a typical web application.`;
-    }
-    
-    if (input.includes('code') && (input.includes('react') || input.includes('component'))) {
-      return `Here's a React component example:
+This sequence diagram illustrates the login process flow.`;
+        } else {
+          aiResponse = `Here's a simple diagram:
 
-\`\`\`javascript
+\`\`\`mermaid
+graph LR
+    A[Input] --> B[Process]
+    B --> C[Output]
+    C --> D[Feedback]
+    D --> A
+\`\`\`
+
+This shows a basic input-process-output cycle with feedback.`;
+        }
+      } else if (input.includes('code') || input.includes('react') || input.includes('python') || input.includes('javascript')) {
+        if (input.includes('react')) {
+          aiResponse = `Here's a React component example:
+
+\`\`\`jsx
 import React, { useState } from 'react';
 
 const Counter = () => {
   const [count, setCount] = useState(0);
 
-  const increment = () => {
-    setCount(prev => prev + 1);
-  };
-
-  const decrement = () => {
-    setCount(prev => prev - 1);
-  };
-
   return (
-    <div className="counter">
-      <h2>Counter: {count}</h2>
-      <button onClick={increment}>+</button>
-      <button onClick={decrement}>-</button>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold">Count: {count}</h2>
+      <button 
+        onClick={() => setCount(count + 1)}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Increment
+      </button>
     </div>
   );
 };
@@ -111,15 +101,13 @@ const Counter = () => {
 export default Counter;
 \`\`\`
 
-This is a simple React counter component with increment and decrement functionality.`;
-    }
-    
-    if (input.includes('code') && input.includes('python')) {
-      return `Here's a Python example:
+This is a simple counter component using React hooks.`;
+        } else if (input.includes('python')) {
+          aiResponse = `Here's a Python function example:
 
 \`\`\`python
 def fibonacci(n):
-    """Generate Fibonacci sequence up to n terms."""
+    """Generate fibonacci sequence up to n terms"""
     if n <= 0:
         return []
     elif n == 1:
@@ -133,206 +121,126 @@ def fibonacci(n):
     
     return sequence
 
-# Example usage
-result = fibonacci(10)
-print(f"First 10 Fibonacci numbers: {result}")
+# Usage
+print(fibonacci(10))
 \`\`\`
 
-This function generates the Fibonacci sequence up to n terms with proper error handling.`;
-    }
+This function generates the Fibonacci sequence up to n terms.`;
+        } else {
+          aiResponse = `Here's a JavaScript example:
 
-    return `I'm DeepSeek Chat Assistant powered by ${model}. I've received your message: "${userInput}". 
+\`\`\`javascript
+// Array manipulation functions
+const numbers = [1, 2, 3, 4, 5];
 
-Try asking me to create a diagram (like "show me a flowchart diagram" or "create a sequence diagram") or ask for code examples (like "show me React code" or "write Python code") to see the enhanced rendering capabilities!
+// Filter even numbers
+const evenNumbers = numbers.filter(num => num % 2 === 0);
 
-This is a simulated response for demonstration purposes.`;
-  };
+// Double all numbers
+const doubledNumbers = numbers.map(num => num * 2);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+// Sum all numbers
+const sum = numbers.reduce((acc, num) => acc + num, 0);
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: input,
-      isUser: true,
-      timestamp: new Date()
-    };
+console.log('Even numbers:', evenNumbers);
+console.log('Doubled:', doubledNumbers);
+console.log('Sum:', sum);
+\`\`\`
 
-    setSessions(prev => prev.map(session => 
-      session.id === currentSessionId 
-        ? { ...session, messages: [...session.messages, userMessage] }
-        : session
-    ));
+This demonstrates common array operations in JavaScript.`;
+        }
+      } else {
+        aiResponse = `I understand your query: "${inputValue}". This is a mock response from the chat assistant. I can help you with various tasks including creating diagrams and providing code examples.
 
-    const currentInput = input;
-    setInput('');
-    setIsLoading(true);
+For diagrams, try asking for:
+- "show me a flowchart diagram" 
+- "create a sequence diagram"
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
+For code examples:
+- "show me React code"
+- "write Python code"`;
+      }
+
+      const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: getMockResponse(currentInput, selectedModel),
-        isUser: false,
-        timestamp: new Date()
+        type: 'assistant',
+        content: aiResponse,
+        timestamp: new Date(),
       };
 
-      setSessions(prev => prev.map(session => 
-        session.id === currentSessionId 
-          ? { ...session, messages: [...session.messages, aiMessage] }
-          : session
-      ));
-      setIsLoading(false);
-    }, 1500);
+      setMessages(prev => [...prev, assistantMessage]);
+    }, 1000);
+
+    setInputValue('');
   };
 
-  const createNewChat = () => {
-    const newSession: ChatSession = {
-      id: Date.now().toString(),
-      title: `Chat ${sessions.length + 1}`,
-      messages: []
-    };
-    setSessions(prev => [...prev, newSession]);
-    setCurrentSessionId(newSession.id);
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const downloadResponse = (content: string, messageId: string) => {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `response-${messageId}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Chat Sidebar */}
-      <div className={`bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${chatPanelCollapsed ? 'w-16' : 'w-64'}`}>
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setChatPanelCollapsed(!chatPanelCollapsed)}
-              className="p-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </Button>
-            {!chatPanelCollapsed && (
-              <Button
-                onClick={createNewChat}
-                size="sm"
-                className="bg-[#72B742] hover:bg-[#72B742]/90 text-white"
-              >
-                New Chat
-              </Button>
+    <div className="flex flex-col h-full">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => (
+          <div key={message.id}>
+            {message.type === 'user' ? (
+              <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border-l-4 border-blue-400">
+                <div className="text-sm text-blue-600 dark:text-blue-400 font-medium mb-1">Your Query</div>
+                <div className="whitespace-pre-wrap">{message.content}</div>
+              </div>
+            ) : (
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">Assistant Response</div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => downloadResponse(message.content, message.id)}
+                    className="flex items-center space-x-1"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download</span>
+                  </Button>
+                </div>
+                <EnhancedMessage content={message.content} />
+              </div>
             )}
           </div>
-          
-          {!chatPanelCollapsed && (
-            <Select value={selectedModel} onValueChange={setSelectedModel}>
-              <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="grok-3">Grok-3</SelectItem>
-                <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                <SelectItem value="deepseek-r1">DeepSeek-R1</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        </div>
-
-        {!chatPanelCollapsed && (
-          <div className="p-4">
-            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Chat History</h3>
-            <div className="space-y-2">
-              {sessions.map((session) => (
-                <Button
-                  key={session.id}
-                  variant={currentSessionId === session.id ? "default" : "ghost"}
-                  onClick={() => setCurrentSessionId(session.id)}
-                  className={`w-full justify-start text-left p-2 ${
-                    currentSessionId === session.id 
-                      ? 'bg-[#72B742] hover:bg-[#72B742]/90 text-white' 
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  <span className="truncate">{session.title}</span>
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
+        ))}
       </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h2 className="text-xl font-semibold text-[#012E6C] dark:text-white">DeepSeek Chat Assistant</h2>
-            </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Model: {selectedModel}
-            </div>
-          </div>
-        </div>
-
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
-          {currentSession?.messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-3xl p-4 rounded-lg ${
-                  message.isUser
-                    ? 'bg-[#72B742] text-white'
-                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100'
-                }`}
-              >
-                {message.isUser ? (
-                  <p className="leading-relaxed">{message.content}</p>
-                ) : (
-                  <EnhancedMessage content={message.content} />
-                )}
-                <div className={`text-xs mt-2 ${message.isUser ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'}`}>
-                  {message.timestamp.toLocaleTimeString()}
-                </div>
-              </div>
-            </div>
-          ))}
-          
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin w-4 h-4 border-2 border-[#72B742] border-t-transparent rounded-full"></div>
-                  <span className="text-gray-500 dark:text-gray-400">AI is thinking...</span>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input */}
-        <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
-          <div className="flex space-x-4">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              className="flex-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              disabled={isLoading}
-            />
-            <Button
-              onClick={handleSend}
-              disabled={!input.trim() || isLoading}
-              className="bg-[#72B742] hover:bg-[#72B742]/90 text-white"
-            >
-              Send
-            </Button>
-          </div>
+      {/* Input */}
+      <div className="border-t p-4 bg-white dark:bg-gray-900">
+        <div className="flex space-x-2">
+          <textarea
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Ask me anything about diagrams, code, or general questions..."
+            className="flex-1 p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
+            rows={3}
+          />
+          <Button 
+            onClick={handleSend}
+            disabled={!inputValue.trim()}
+            className="self-end"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
         </div>
       </div>
     </div>
